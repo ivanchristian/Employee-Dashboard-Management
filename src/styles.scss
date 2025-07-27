@@ -1,4 +1,92 @@
-/* You can add global styles to this file, and also import other style files */
+@import "@angular/material/prebuilt-themes/indigo-pink.css";
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body {
+  margin: 0;
+  font-family: "Roboto", sans-serif;
+  background-color: #f5f7fa;
+}
+
+.container-fluid {
+  padding: 20px;
+}
+
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #1a237e;
+  color: white;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar a {
+  color: white;
+  text-decoration: none;
+  display: block;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 4px;
+}
+
+.sidebar a:hover {
+  background-color: #3949ab;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  background-color: #ffffff;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.btn-primary {
+  background-color: #3f51b5;
+  border-color: #3f51b5;
+}
+
+.btn-primary:hover {
+  background-color: #303f9f;
+}
+
+.form-floating > label {
+  /* Add any custom styles for Bootstrap floating labels if needed */
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px;
+  }
+  .content {
+    padding: 10px;
+  }
+  table {
+    font-size: 14px;
+  }
+  .btn {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 576px) {
+  .sidebar {
+    width: 100%;
+    position: fixed;
+    z-index: 1000;
+    height: auto;
+  }
+  .content {
+    margin-top: 60px;
+  }
+}

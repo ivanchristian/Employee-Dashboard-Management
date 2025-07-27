@@ -1,0 +1,129 @@
+<div class="container-fluid">
+  <mat-card class="card mx-auto mt-5" style="max-width: 600px">
+    <mat-card-header>
+      <mat-card-title>Add Employee</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Username</mat-label>
+          <input matInput formControlName="username" required />
+          @if (employeeForm.controls['username'].hasError('required')) {
+          <mat-error>Username is required</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>First Name</mat-label>
+          <input matInput formControlName="firstName" required />
+          @if (employeeForm.controls['firstName'].hasError('required')) {
+          <mat-error>First Name is required</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="lastName" required />
+          @if (employeeForm.controls['lastName'].hasError('required')) {
+          <mat-error>Last Name is required</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" required email />
+          @if (employeeForm.controls['email'].hasError('required')) {
+          <mat-error>Email is required</mat-error>
+          } @if (employeeForm.controls['email'].hasError('email')) {
+          <mat-error>Invalid email format</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Birth Date</mat-label>
+          <input
+            matInput
+            [matDatepicker]="picker"
+            formControlName="birthDate"
+            required
+            [max]="today"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          @if (employeeForm.controls['birthDate'].hasError('required')) {
+          <mat-error>Birth Date is required</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Basic Salary</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="basicSalary"
+            required
+          />
+          @if (employeeForm.controls['basicSalary'].hasError('required')) {
+          <mat-error>Basic Salary is required</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status" required>
+            <mat-option value="Active">Active</mat-option>
+            <mat-option value="Inactive">Inactive</mat-option>
+            <mat-option value="On Leave">On Leave</mat-option>
+          </mat-select>
+          @if (employeeForm.controls['status'].hasError('required')) {
+          <mat-error>Status is required</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Group</mat-label>
+          <input
+            matInput
+            [(ngModel)]="groupSearch"
+            (input)="filterGroups()"
+            [ngModelOptions]="{ standalone: true }"
+          />
+          <mat-select formControlName="group" required>
+            @for (group of filteredGroups; track group) {
+            <mat-option [value]="group">{{ group }}</mat-option>
+            }
+          </mat-select>
+          @if (employeeForm.controls['group'].hasError('required')) {
+          <mat-error>Group is required</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Description</mat-label>
+          <input
+            matInput
+            [matDatepicker]="descPicker"
+            formControlName="description"
+            required
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="descPicker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #descPicker></mat-datepicker>
+          @if (employeeForm.controls['description'].hasError('required')) {
+          <mat-error>Description is required</mat-error>
+          }
+        </mat-form-field>
+        <div class="d-flex justify-content-end mt-3">
+          <button mat-button type="button" class="me-2" (click)="cancel()">
+            Cancel
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="employeeForm.invalid"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

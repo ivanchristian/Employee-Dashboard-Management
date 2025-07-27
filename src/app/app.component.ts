@@ -1,13 +1,24 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { EmployeeService } from './services/employee.service';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrls: ['./app.component.scss'],
+  standalone: true,
+  imports: [CommonModule, RouterLink, RouterOutlet],
 })
 export class AppComponent {
-  title = 'employee-management';
+  isLoggedIn: boolean = false;
+
+  constructor(private employeeService: EmployeeService) {
+    this.isLoggedIn = this.employeeService.isLoggedIn();
+  }
+
+  logout() {
+    this.employeeService.logout();
+    this.isLoggedIn = false;
+  }
 }

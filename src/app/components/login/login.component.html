@@ -1,0 +1,42 @@
+<div class="container-fluid">
+  <mat-card class="card mx-auto mt-5" style="max-width: 400px">
+    <mat-card-header>
+      <mat-card-title>Login</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Username</mat-label>
+          <input matInput formControlName="username" required />
+          <mat-error
+            *ngIf="loginForm.controls['username']?.hasError('required')"
+          >
+            Username is required
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" formControlName="password" required />
+          <mat-error
+            *ngIf="loginForm.controls['password']?.hasError('required')"
+          >
+            Password is required
+          </mat-error>
+        </mat-form-field>
+        <mat-error *ngIf="errorMessage" class="mt-2">{{
+          errorMessage
+        }}</mat-error>
+        <div class="d-flex justify-content-end mt-3">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="loginForm.invalid"
+          >
+            Login
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
