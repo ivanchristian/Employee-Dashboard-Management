@@ -76,36 +76,17 @@
           <mat-error>Status is required</mat-error>
           }
         </mat-form-field>
+
         <mat-form-field appearance="fill" class="w-100">
           <mat-label>Group</mat-label>
-          <input
-            matInput
-            [(ngModel)]="groupSearch"
-            (input)="filterGroups()"
-            [ngModelOptions]="{ standalone: true }"
-          />
-          <mat-select formControlName="group" required>
-            @for (group of filteredGroups; track group) {
-            <mat-option [value]="group">{{ group }}</mat-option>
-            }
-          </mat-select>
+          <input matInput formControlName="group" required />
           @if (employeeForm.controls['group'].hasError('required')) {
           <mat-error>Group is required</mat-error>
           }
         </mat-form-field>
         <mat-form-field appearance="fill" class="w-100">
           <mat-label>Description</mat-label>
-          <input
-            matInput
-            [matDatepicker]="descPicker"
-            formControlName="description"
-            required
-          />
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="descPicker"
-          ></mat-datepicker-toggle>
-          <mat-datepicker #descPicker></mat-datepicker>
+          <input matInput formControlName="description" required />
           @if (employeeForm.controls['description'].hasError('required')) {
           <mat-error>Description is required</mat-error>
           }

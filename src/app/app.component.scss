@@ -9,6 +9,16 @@
   color: white;
   padding: 20px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar h3 {
+  margin: 0 0 20px;
+  font-size: 20px;
 }
 
 .sidebar a {
@@ -29,4 +39,28 @@
   flex: 1;
   padding: 20px;
   background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px;
+  }
+  .content {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  .sidebar {
+    width: 100%;
+    position: fixed;
+    z-index: 1000;
+    height: auto;
+  }
+  .content {
+    margin-top: 60px;
+  }
 }

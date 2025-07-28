@@ -1,34 +1,76 @@
-<div class="container-fluid">
-  <mat-card class="card mx-auto mt-5" style="max-width: 600px">
-    <mat-card-header>
+<div class="employee-detail-container" @fadeIn>
+  <mat-card class="employee-card">
+    <mat-card-header class="header-gradient">
       <mat-card-title>Employee Details</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       @if (employee) {
-      <p><strong>Username:</strong> {{ employee.username }}</p>
-      <p><strong>First Name:</strong> {{ employee.firstName }}</p>
-      <p><strong>Last Name:</strong> {{ employee.lastName }}</p>
-      <p><strong>Email:</strong> {{ employee.email }}</p>
-      <p>
-        <strong>Birth Date:</strong>
-        {{ employee.birthDate | date : "mediumDate" }}
-      </p>
-      <p>
-        <strong>Basic Salary:</strong> Rp.
-        {{ employee.basicSalary | number : "1.2-2" }}
-      </p>
-      <p><strong>Status:</strong> {{ employee.status }}</p>
-      <p><strong>Group:</strong> {{ employee.group }}</p>
-      <p>
-        <strong>Description:</strong>
-        {{ employee.description | date : "mediumDate" }}
-      </p>
+      <div class="employee-info">
+        <div class="info-row">
+          <span class="label">Username</span>
+          <span class="value">{{ employee.username }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">First Name</span>
+          <span class="value">{{ employee.firstName }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Last Name</span>
+          <span class="value">{{ employee.lastName }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Email</span>
+          <span class="value">{{ employee.email }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Birth Date</span>
+          <span class="value">{{
+            employee.birthDate | date : "mediumDate"
+          }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Basic Salary</span>
+          <span class="value"
+            >Rp. {{ employee.basicSalary | number : "1.2-2" }}</span
+          >
+        </div>
+        <div class="info-row">
+          <span class="label">Status</span>
+          <span
+            class="value status"
+            [ngClass]="
+              employee.status === 'Active' ? 'status-active' : 'status-inactive'
+            "
+          >
+            {{ employee.status }}
+          </span>
+        </div>
+        <div class="info-row">
+          <span class="label">Group</span>
+          <span class="value">{{ employee.group }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Description</span>
+          <span class="value">{{ employee.description }}</span>
+        </div>
+      </div>
       } @else {
-      <p>Loading employee data...</p>
+      <div class="loading">
+        <p>Loading employee data...</p>
+      </div>
       }
     </mat-card-content>
-    <mat-card-actions>
-      <button mat-button (click)="goBack()">Back</button>
+    <mat-card-actions class="actions">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="goBack()"
+        [@buttonHover]="buttonState"
+        (mouseenter)="buttonState = 'active'"
+        (mouseleave)="buttonState = 'inactive'"
+      >
+        Back
+      </button>
     </mat-card-actions>
   </mat-card>
 </div>

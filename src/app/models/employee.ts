@@ -3,9 +3,9 @@ export interface Employee {
   firstName: string;
   lastName: string;
   email: string;
-  birthDate: Date;
+  birthDate: string;
   basicSalary: number;
   status: string;
   group: string;
-  description: Date;
+  description: string;
 }

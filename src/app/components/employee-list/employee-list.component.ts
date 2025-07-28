@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { EmployeeService } from '../../services/employee.service';
-import { Employee } from '../../models/employee';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -15,6 +14,14 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate,
+} from '@angular/animations';
+import { Employee } from '../../models/employee';
 
 @Component({
   selector: 'app-employee-list',
@@ -32,6 +39,22 @@ import { FormsModule } from '@angular/forms';
     MatSelectModule,
     FormsModule,
   ],
+  animations: [
+    trigger('rowHover', [
+      state(
+        'inactive',
+        style({ transform: 'scale(1)', backgroundColor: 'transparent' })
+      ),
+      state(
+        'active',
+        style({
+          transform: 'scale(1.02)',
+          backgroundColor: 'rgba(63, 81, 181, 0.05)',
+        })
+      ),
+      transition('inactive <=> active', animate('200ms ease-in-out')),
+    ]),
+  ],
 })
 export class EmployeeListComponent implements OnInit {
   displayedColumns: string[] = [
@@ -47,8 +70,6 @@ export class EmployeeListComponent implements OnInit {
   totalEmployees: number = 0;
   pageSize: number = 10;
   pageIndex: number = 0;
-  sortField: string = 'username';
-  sortOrder: string = 'asc';
   searchQuery: { firstName?: string; email?: string } = {};
 
   @ViewChild(MatSort) sort!: MatSort;
@@ -67,18 +88,10 @@ export class EmployeeListComponent implements OnInit {
   }
 
   loadEmployees() {
-    this.employeeService
-      .getEmployees(
-        this.pageIndex + 1,
-        this.pageSize,
-        this.sortField,
-        this.sortOrder,
-        this.searchQuery
-      )
-      .subscribe((data) => {
-        this.employees.data = data.employees;
-        this.totalEmployees = data.total;
-      });
+    this.employeeService.getEmployees(this.searchQuery).subscribe((data) => {
+      this.employees.data = data;
+      this.totalEmployees = data.length; // Update based on actual data
+    });
   }
 
   onPageChange(event: PageEvent) {
@@ -93,9 +106,14 @@ export class EmployeeListComponent implements OnInit {
   }
 
   sortData(sort: Sort) {
-    this.sortField = sort.active;
-    this.sortOrder = sort.direction || 'asc';
-    this.loadEmployees();
+    if (sort.direction) {
+      const sortedData = [...this.employees.data].sort((a, b) => {
+        const isAsc = sort.direction === 'asc';
+        const field = sort.active as keyof Employee;
+        return (a[field] < b[field] ? -1 : 1) * (isAsc ? 1 : -1);
+      });
+      this.employees.data = sortedData;
+    }
   }
 
   search() {
@@ -108,7 +126,7 @@ export class EmployeeListComponent implements OnInit {
   }
 
   editEmployee(username: string) {
-    this.snackBar.open(`Editing ${username}`, 'Close', {
+    this.snackBar.open(`Viewing ${username}`, 'Close', {
       duration: 3000,
       panelClass: ['bg-warning'],
     });
