@@ -13,16 +13,13 @@
     <mat-card-content>
       <div class="search-container">
         <mat-form-field appearance="outline" class="search-field">
-          <mat-label>First Name</mat-label>
+          <mat-label>Search Employees</mat-label>
           <input
             matInput
-            [(ngModel)]="searchQuery.firstName"
+            [(ngModel)]="searchTerm"
             (input)="search()"
+            placeholder="Search by username, name, or email"
           />
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="search-field">
-          <mat-label>Email</mat-label>
-          <input matInput [(ngModel)]="searchQuery.email" (input)="search()" />
         </mat-form-field>
       </div>
       <table
@@ -34,67 +31,42 @@
       >
         <ng-container matColumnDef="username">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Username</th>
-          <td
-            mat-cell
-            *matCellDef="let employee"
-            [@rowHover]="employee.hovered ? 'active' : 'inactive'"
-            (mouseenter)="employee.hovered = true"
-            (mouseleave)="employee.hovered = false"
-          >
-            {{ employee.username }}
-          </td>
+          <td mat-cell *matCellDef="let employee">{{ employee.username }}</td>
         </ng-container>
         <ng-container matColumnDef="firstName">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>First Name</th>
-          <td
-            mat-cell
-            *matCellDef="let employee"
-            [@rowHover]="employee.hovered ? 'active' : 'inactive'"
-            (mouseenter)="employee.hovered = true"
-            (mouseleave)="employee.hovered = false"
-          >
-            {{ employee.firstName }}
-          </td>
+          <td mat-cell *matCellDef="let employee">{{ employee.firstName }}</td>
         </ng-container>
         <ng-container matColumnDef="lastName">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Last Name</th>
-          <td
-            mat-cell
-            *matCellDef="let employee"
-            [@rowHover]="employee.hovered ? 'active' : 'inactive'"
-            (mouseenter)="employee.hovered = true"
-            (mouseleave)="employee.hovered = false"
-          >
-            {{ employee.lastName }}
-          </td>
+          <td mat-cell *matCellDef="let employee">{{ employee.lastName }}</td>
         </ng-container>
         <ng-container matColumnDef="email">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
-          <td
-            mat-cell
-            *matCellDef="let employee"
-            [@rowHover]="employee.hovered ? 'active' : 'inactive'"
-            (mouseenter)="employee.hovered = true"
-            (mouseleave)="employee.hovered = false"
-          >
-            {{ employee.email }}
-          </td>
+          <td mat-cell *matCellDef="let employee">{{ employee.email }}</td>
         </ng-container>
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td
-            mat-cell
-            *matCellDef="let employee"
-            [@rowHover]="employee.hovered ? 'active' : 'inactive'"
-            (mouseenter)="employee.hovered = true"
-            (mouseleave)="employee.hovered = false"
-          >
+          <td mat-cell *matCellDef="let employee" class="action-buttons">
             <button
               mat-raised-button
-              (click)="editEmployee(employee.username)"
               color="primary"
+              (click)="editEmployee(employee.username)"
+              style="margin-right: 10px"
             >
               <mat-label style="color: white">Details</mat-label>
+            </button>
+            <button
+              mat-raised-button
+              style="background-color: yellow; color: black; margin-right: 10px"
+            >
+              <mat-label>Edit</mat-label>
+            </button>
+            <button
+              mat-raised-button
+              style="background-color: red; color: white"
+            >
+              <mat-label>Delete</mat-label>
             </button>
           </td>
         </ng-container>

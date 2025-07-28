@@ -85,6 +85,11 @@ button[color="warn"]:hover {
   color: #b71c1c;
 }
 
+.action-buttons {
+  gap: 10px;
+  margin-right: 5px;
+}
+
 mat-paginator {
   margin-top: 16px;
   background: #f5f7fa;

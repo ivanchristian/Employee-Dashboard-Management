@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { EmployeeService } from '../../services/employee.service';
 import { MatTableDataSource } from '@angular/material/table';
@@ -12,15 +12,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
-import {
-  trigger,
-  state,
-  style,
-  transition,
-  animate,
-} from '@angular/animations';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Employee } from '../../models/employee';
 
 @Component({
@@ -36,27 +30,10 @@ import { Employee } from '../../models/employee';
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
-    MatSelectModule,
     FormsModule,
   ],
-  animations: [
-    trigger('rowHover', [
-      state(
-        'inactive',
-        style({ transform: 'scale(1)', backgroundColor: 'transparent' })
-      ),
-      state(
-        'active',
-        style({
-          transform: 'scale(1.02)',
-          backgroundColor: 'rgba(63, 81, 181, 0.05)',
-        })
-      ),
-      transition('inactive <=> active', animate('200ms ease-in-out')),
-    ]),
-  ],
 })
-export class EmployeeListComponent implements OnInit {
+export class EmployeeListComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [
     'username',
     'firstName',
@@ -70,7 +47,9 @@ export class EmployeeListComponent implements OnInit {
   totalEmployees: number = 0;
   pageSize: number = 10;
   pageIndex: number = 0;
-  searchQuery: { firstName?: string; email?: string } = {};
+  searchTerm: string = '';
+  private searchSubject = new Subject<string>();
+  private searchSubscription: Subscription | null = null;
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -82,27 +61,60 @@ export class EmployeeListComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // Initialize table
     this.loadEmployees();
     this.employees.sort = this.sort;
     this.employees.paginator = this.paginator;
+
+    // Set up custom filter predicate
+    this.employees.filterPredicate = (data: Employee, filter: string) => {
+      const searchStr = filter.toLowerCase().trim();
+      return (
+        data.username?.toLowerCase().includes(searchStr) ||
+        false ||
+        data.firstName?.toLowerCase().includes(searchStr) ||
+        false ||
+        data.lastName?.toLowerCase().includes(searchStr) ||
+        false ||
+        data.email?.toLowerCase().includes(searchStr) ||
+        false
+      );
+    };
+
+    // Set up search debouncing
+    this.searchSubscription = this.searchSubject
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((term) => {
+        this.employees.filter = term.trim().toLowerCase();
+        this.totalEmployees = this.employees.filteredData.length;
+        this.pageIndex = 0;
+        if (this.paginator) {
+          this.paginator.firstPage();
+        }
+      });
+  }
+
+  ngOnDestroy() {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
   }
 
   loadEmployees() {
-    this.employeeService.getEmployees(this.searchQuery).subscribe((data) => {
+    this.employeeService.getEmployees().subscribe((data) => {
       this.employees.data = data;
-      this.totalEmployees = data.length; // Update based on actual data
+      this.totalEmployees = data.length;
+      // Apply filter if search term exists
+      if (this.searchTerm) {
+        this.employees.filter = this.searchTerm.trim().toLowerCase();
+        this.totalEmployees = this.employees.filteredData.length;
+      }
     });
   }
 
   onPageChange(event: PageEvent) {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
-    this.loadEmployees();
-  }
-
-  onPageSizeChange() {
-    this.pageIndex = 0;
-    this.loadEmployees();
   }
 
   sortData(sort: Sort) {
@@ -110,15 +122,16 @@ export class EmployeeListComponent implements OnInit {
       const sortedData = [...this.employees.data].sort((a, b) => {
         const isAsc = sort.direction === 'asc';
         const field = sort.active as keyof Employee;
-        return (a[field] < b[field] ? -1 : 1) * (isAsc ? 1 : -1);
+        const aValue = a[field] ?? '';
+        const bValue = b[field] ?? '';
+        return (aValue < bValue ? -1 : 1) * (isAsc ? 1 : -1);
       });
       this.employees.data = sortedData;
     }
   }
 
   search() {
-    this.pageIndex = 0;
-    this.loadEmployees();
+    this.searchSubject.next(this.searchTerm);
   }
 
   navigateToAddEmployee() {
